@@ -52,6 +52,8 @@ public class MatroskaFileFrame
    */
   private ByteBuffer data;
   private boolean keyFrame;
+  private ByteBuffer additionalData;
+  private long addId;
 
   /**
    * MatroskaFrame Default constructor
@@ -82,6 +84,11 @@ public class MatroskaFileFrame
     {
       this.setData(copy.getData().duplicate());
     }
+    if (copy.getAdditionalData() != null)
+    {
+      this.setAdditionalData(copy.getAdditionalData().duplicate());
+    }
+    this.setAddId(copy.getAddId());
   }
 
   /**
@@ -182,6 +189,33 @@ public class MatroskaFileFrame
   {
     LOG.trace("Setting data with size {}", data.remaining());
     this.data = data.duplicate();
+  }
+
+  /**
+   * @return the additional data contained in this frame.
+   */
+  public ByteBuffer getAdditionalData()
+  {
+    return additionalData.duplicate();
+  }
+
+  /**
+   * @param data the data associated with this frame
+   */
+  public void setAdditionalData(final ByteBuffer data)
+  {
+    LOG.trace("Setting additional data with size {}", data.remaining());
+    this.additionalData = data.duplicate();
+  }
+
+  public long getAddId()
+  {
+    return addId;
+  }
+
+  public void setAddId(long addId)
+  {
+    this.addId = addId;
   }
 
 }

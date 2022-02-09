@@ -19,6 +19,7 @@
  */
 package org.ebml.matroska;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -382,6 +383,8 @@ public class MatroskaFile
       {
         long blockDuration = 0;
         long blockReference = 0;
+        ByteBuffer additionalData = null;
+        long blockAddId = 0;
         level3 = ((MasterElement) level2).readNextChild(reader);
         MatroskaBlock block = null;
         while (level3 != null)
@@ -404,6 +407,35 @@ public class MatroskaFile
             level3.readData(ioDS);
             blockReference = ((SignedIntegerElement) level3).getValue();
           }
+          else if (level3.isType(MatroskaDocTypes.BlockAdditions.getType()))
+          {
+            Element level4 = ((MasterElement) level3).readNextChild(reader);
+            while (level4 != null)
+            {
+              if (level4.isType(MatroskaDocTypes.BlockMore.getType()))
+              {
+                Element level5 = ((MasterElement) level4).readNextChild(reader);
+                while (level5 != null)
+                {
+                  if (level5.isType(MatroskaDocTypes.BlockAddID.getType()))
+                  {
+                    level5.readData(ioDS);
+                    blockAddId = ((UnsignedIntegerElement) level5).getValue();
+                  }
+                  else if (level5.isType(MatroskaDocTypes.BlockAdditional.getType()))
+                  {
+                    level5.readData(ioDS);
+                    additionalData = level5.getData();
+                  }
+                  level5.skipData(ioDS);
+                  level5 = ((MasterElement) level4).readNextChild(reader);
+                }
+              }
+
+              level4.skipData(ioDS);
+              level4 = ((MasterElement) level3).readNextChild(reader);
+            }
+          }
 
           level3.skipData(ioDS);
           level3 = ((MasterElement) level2).readNextChild(reader);
@@ -420,6 +452,8 @@ public class MatroskaFile
         frame.setDuration(blockDuration);
         frame.addReferences(blockReference);
         frame.setData(block.getFrame(0));
+        frame.setAdditionalData(additionalData);
+        frame.setAddId(blockAddId);
         frameQueue.add(new MatroskaFileFrame(frame));
 
         if (block.getFrameCount() > 1)

@@ -114,6 +114,7 @@ public class MatroskaFileTrack
     private short pixelHeight;
     private short displayWidth = 0;
     private short displayHeight = 0;
+    private short alphaMode;
 
     public short getPixelWidth()
     {
@@ -153,6 +154,16 @@ public class MatroskaFileTrack
     public void setDisplayHeight(final short displayHeight)
     {
       this.displayHeight = displayHeight;
+    }
+
+    public short getAlphaMode()
+    {
+      return alphaMode;
+    }
+
+    public void setAlphaMode(final short alphaMode)
+    {
+      this.alphaMode = alphaMode;
     }
   }
 
@@ -353,6 +364,11 @@ public class MatroskaFileTrack
           {
             level4.readData(ioDS);
             track.video.setDisplayHeight((short) ((UnsignedIntegerElement) level4).getValue());
+          }
+          else if (level4.isType(MatroskaDocTypes.AlphaMode.getType()))
+          {
+            level4.readData(ioDS);
+            track.video.setAlphaMode((short) ((UnsignedIntegerElement) level4).getValue());
           }
 
           level4.skipData(ioDS);
