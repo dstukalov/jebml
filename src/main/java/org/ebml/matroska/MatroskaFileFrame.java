@@ -196,11 +196,11 @@ public class MatroskaFileFrame
    */
   public ByteBuffer getAdditionalData()
   {
-    return additionalData.duplicate();
+    return additionalData == null ? null : additionalData.duplicate();
   }
 
   /**
-   * @param data the data associated with this frame
+   * @param data the additional data associated with this frame
    */
   public void setAdditionalData(final ByteBuffer data)
   {
@@ -217,5 +217,4 @@ public class MatroskaFileFrame
   {
     this.addId = addId;
   }
-
 }
