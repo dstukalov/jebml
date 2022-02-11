@@ -262,6 +262,7 @@ public class MatroskaFileTrack
       s += "\t\t" + "PixelHeight: " + video.getPixelHeight() + "\n";
       s += "\t\t" + "DisplayWidth: " + video.getDisplayWidth() + "\n";
       s += "\t\t" + "DisplayHeight: " + video.getDisplayHeight() + "\n";
+      s += "\t\t" + "AlphaMode: " + video.getAlphaMode() + "\n";
     }
 
     if (getTrackType() == TrackType.AUDIO)
